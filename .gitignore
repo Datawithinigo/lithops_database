@@ -18,6 +18,10 @@ pnpm-debug.log*
 .env.production
 venv
 
+# data export files
+processors-data.json
+vercel-postgres-import.sql
+
 # macOS-specific files
 .DS_Store
 

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GreenComputingLithops API Tester</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    h1 {
+      color: #2c3e50;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+    }
+    .endpoint {
+      background-color: #f8f9fa;
+      border-left: 4px solid #3498db;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 0 4px 4px 0;
+    }
+    .endpoint h3 {
+      margin-top: 0;
+      color: #2c3e50;
+    }
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    pre {
+      background-color: #f1f1f1;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    .response {
+      margin-top: 15px;
+      display: none;
+    }
+    .error {
+      color: #e74c3c;
+    }
+  </style>
+</head>
+<body>
+  <h1>GreenComputingLithops API Tester</h1>
+  <p>Use this page to test the GreenComputingLithops API endpoints.</p>
+  
+  <div class="endpoint">
+    <h3>Get API Info</h3>
+    <p>Get information about the API and available endpoints.</p>
+    <button onclick="testEndpoint('/api')">Test Endpoint</button>
+    <div id="api-response" class="response">
+      <h4>Response:</h4>
+      <pre id="api-result"></pre>
+    </div>
+  </div>
+
+  <div class="endpoint">
+    <h3>Get All Processors</h3>
+    <p>Get a list of processors with pagination.</p>
+    <label for="processors-skip">Skip:</label>
+    <input type="number" id="processors-skip" value="0" min="0">
+    <label for="processors-limit">Limit:</label>
+    <input type="number" id="processors-limit" value="10" min="1" max="100">
+    <button onclick="testProcessors()">Test Endpoint</button>
+    <div id="processors-response" class="response">
+      <h4>Response:</h4>
+      <pre id="processors-result"></pre>
+    </div>
+  </div>
+
+  <div class="endpoint">
+    <h3>Get Processor by ID</h3>
+    <p>Get a specific processor by its ID.</p>
+    <label for="processor-id">Processor ID:</label>
+    <input type="number" id="processor-id" value="1" min="1">
+    <button onclick="testProcessorById()">Test Endpoint</button>
+    <div id="processor-id-response" class="response">
+      <h4>Response:</h4>
+      <pre id="processor-id-result"></pre>
+    </div>
+  </div>
+
+  <div class="endpoint">
+    <h3>Get Processor TDP by Name</h3>
+    <p>Get TDP information for a processor by its name.</p>
+    <label for="processor-name">Processor Name:</label>
+    <input type="text" id="processor-name" value="Intel Xeon E5-2690">
+    <button onclick="testProcessorTdp()">Test Endpoint</button>
+    <div id="processor-tdp-response" class="response">
+      <h4>Response:</h4>
+      <pre id="processor-tdp-result"></pre>
+    </div>
+  </div>
+
+  <div class="endpoint">
+    <h3>Setup Database</h3>
+    <p>Set up the database schema. This should only be done once when setting up the project.</p>
+    <button onclick="setupDatabase()">Setup Database</button>
+    <div id="setup-db-response" class="response">
+      <h4>Response:</h4>
+      <pre id="setup-db-result"></pre>
+    </div>
+  </div>
+
+  <div class="endpoint">
+    <h3>Upload CSV Data</h3>
+    <p>Upload processor data via CSV.</p>
+    <label for="csv-data">CSV Data:</label>
+    <textarea id="csv-data" rows="10" placeholder="Paste CSV content here..."></textarea>
+    <button onclick="uploadCsv()">Upload CSV</button>
+    <div id="upload-csv-response" class="response">
+      <h4>Response:</h4>
+      <pre id="upload-csv-result"></pre>
+    </div>
+  </div>
+
+  <script>
+    async function testEndpoint(endpoint) {
+      const responseElement = document.getElementById(endpoint.substring(1) + '-response');
+      const resultElement = document.getElementById(endpoint.substring(1) + '-result');
+      
+      responseElement.style.display = 'block';
+      resultElement.textContent = 'Loading...';
+      
+      try {
+        const response = await fetch(endpoint);
+        const data = await response.json();
+        resultElement.textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        resultElement.textContent = `Error: ${error.message}`;
+        resultElement.classList.add('error');
+      }
+    }
+
+    async function testProcessors() {
+      const skip = document.getElementById('processors-skip').value;
+      const limit = document.getElementById('processors-limit').value;
+      const endpoint = `/api/processors?skip=${skip}&limit=${limit}`;
+      
+      const responseElement = document.getElementById('processors-response');
+      const resultElement = document.getElementById('processors-result');
+      
+      responseElement.style.display = 'block';
+      resultElement.textContent = 'Loading...';
+      
+      try {
+        const response = await fetch(endpoint);
+        const data = await response.json();
+        resultElement.textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        resultElement.textContent = `Error: ${error.message}`;
+        resultElement.classList.add('error');
+      }
+    }
+
+    async function testProcessorById() {
+      const id = document.getElementById('processor-id').value;
+      const endpoint = `/api/processors/${id}`;
+      
+      const responseElement = document.getElementById('processor-id-response');
+      const resultElement = document.getElementById('processor-id-result');
+      
+      responseElement.style.display = 'block';
+      resultElement.textContent = 'Loading...';
+      
+      try {
+        const response = await fetch(endpoint);
+        const data = await response.json();
+        resultElement.textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        resultElement.textContent = `Error: ${error.message}`;
+        resultElement.classList.add('error');
+      }
+    }
+
+    async function testProcessorTdp() {
+      const name = document.getElementById('processor-name').value;
+      const endpoint = `/api/processor/tdp/${encodeURIComponent(name)}`;
+      
+      const responseElement = document.getElementById('processor-tdp-response');
+      const resultElement = document.getElementById('processor-tdp-result');
+      
+      responseElement.style.display = 'block';
+      resultElement.textContent = 'Loading...';
+      
+      try {
+        const response = await fetch(endpoint);
+        const data = await response.json();
+        resultElement.textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        resultElement.textContent = `Error: ${error.message}`;
+        resultElement.classList.add('error');
+      }
+    }
+
+    async function setupDatabase() {
+      const endpoint = '/api/setup-db';
+      
+      const responseElement = document.getElementById('setup-db-response');
+      const resultElement = document.getElementById('setup-db-result');
+      
+      responseElement.style.display = 'block';
+      resultElement.textContent = 'Setting up database...';
+      
+      try {
+        const response = await fetch(endpoint);
+        const data = await response.json();
+        resultElement.textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        resultElement.textContent = `Error: ${error.message}`;
+        resultElement.classList.add('error');
+      }
+    }
+
+    async function uploadCsv() {
+      const csvData = document.getElementById('csv-data').value;
+      const endpoint = '/api/upload-csv';
+      
+      const responseElement = document.getElementById('upload-csv-response');
+      const resultElement = document.getElementById('upload-csv-result');
+      
+      responseElement.style.display = 'block';
+      resultElement.textContent = 'Uploading CSV data...';
+      
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain',
+          },
+          body: csvData
+        });
+        const data = await response.json();
+        resultElement.textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        resultElement.textContent = `Error: ${error.message}`;
+        resultElement.classList.add('error');
+      }
+    }
+  </script>
+</body>
+</html>

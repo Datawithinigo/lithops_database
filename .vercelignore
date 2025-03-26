@@ -1,0 +1,20 @@
+# Ignore Python files and dependencies
+*.py
+requirements.txt
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+ENV/
+
+# Ignore database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Ignore development files
+.vscode/
+.idea/
+.DS_Store
