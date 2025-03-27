@@ -16,6 +16,7 @@
     "quick-import": "node quick-import.js",
     "csv-to-sql": "node csv-to-sql.js",
     "import-all-csv": "node import-all-csv.js",
+    "check-db": "node check-db.js",
     "setup-vercel-postgres": "bash setup-vercel-postgres.sh",
     "setup-vercel-postgres-win": "setup-vercel-postgres.bat"
   },

@@ -139,6 +139,8 @@ If you already have data in your local database, you can export it and import it
 
 After importing data, you can verify it was successful:
 
+### Option 1: Using the Admin Dashboard
+
 1. Go back to the Admin Dashboard:
    - Visit: `https://www.greencomputinglithops.es/admin.html`
 
@@ -148,6 +150,35 @@ After importing data, you can verify it was successful:
    - Click on "TDP Lookup" in the Admin Dashboard
    - Enter a processor name (e.g., "Intel Xeon E5-2690")
    - Click "Look Up TDP"
+
+### Option 2: Using the check-db.js Script (New)
+
+This script allows you to check the content of your Vercel Postgres database:
+
+1. Get your Vercel Postgres connection string:
+   - Go to your Vercel dashboard
+   - Select your "GreenComputingLithops" project
+   - Go to "Settings" > "Environment Variables"
+   - Find and copy the value of `POSTGRES_URL`
+
+2. Run the check-db script with your Postgres URL:
+   ```bash
+   npm run check-db "your_postgres_url"
+   ```
+   
+   Or directly:
+   ```bash
+   node check-db.js "your_postgres_url"
+   ```
+
+3. The script will:
+   - Connect to your Vercel Postgres database
+   - List all tables in the database
+   - Count the number of processors in the database
+   - Show sample data from the database
+   - Check for duplicate products
+
+This is useful for troubleshooting and verifying that your data was imported correctly.
 
 If you're still having issues, please check the Vercel logs for any errors:
 1. Go to your Vercel dashboard and select your project

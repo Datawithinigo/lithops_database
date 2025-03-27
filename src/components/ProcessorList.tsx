@@ -38,7 +38,7 @@ export default function ProcessorList() {
   });
 
   useEffect(() => {
-    fetch('http://localhost:8000/processors/')
+    fetch('/api/processors')
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
