@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Database Setup - GreenComputingLithops</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    h1 {
+      color: #2c3e50;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+    }
+    .card {
+      background-color: #f8f9fa;
+      border-left: 4px solid #3498db;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 0 4px 4px 0;
+    }
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    pre {
+      background-color: #f1f1f1;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    .success {
+      color: #27ae60;
+      font-weight: bold;
+    }
+    .error {
+      color: #e74c3c;
+      font-weight: bold;
+    }
+    #result {
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Database Setup - GreenComputingLithops</h1>
+  
+  <div class="card">
+    <h2>Set Up Database Schema</h2>
+    <p>Click the button below to set up the database schema for the GreenComputingLithops project. This will create the necessary tables and indexes in your Vercel Postgres database.</p>
+    <button id="setupButton">Set Up Database</button>
+    <div id="result">
+      <h3>Result:</h3>
+      <pre id="resultText"></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Next Steps</h2>
+    <p>After setting up the database schema, you need to import data. You can do this using one of the following methods:</p>
+    <ul>
+      <li>Use the <a href="/api-test.html">API Tester</a> to upload CSV data</li>
+      <li>Use the quick-import.js script to import data from a CSV file</li>
+      <li>Use the Vercel dashboard to import data using SQL statements</li>
+    </ul>
+    <p>For more information, refer to the <a href="https://github.com/yourusername/GreenComputingLithops/blob/main/POSTGRES_SETUP_GUIDE.md">Postgres Setup Guide</a>.</p>
+  </div>
+
+  <script>
+    document.getElementById('setupButton').addEventListener('click', async () => {
+      const resultDiv = document.getElementById('result');
+      const resultText = document.getElementById('resultText');
+      
+      resultDiv.style.display = 'block';
+      resultText.textContent = 'Setting up database...';
+      
+      try {
+        // Try different API endpoints
+        let response;
+        let error = null;
+        
+        try {
+          response = await fetch('/api/setup-db');
+        } catch (err) {
+          error = err;
+          console.error('Error with /api/setup-db:', err);
+          
+          try {
+            response = await fetch('/api/setup-db/index');
+          } catch (err2) {
+            error = err2;
+            console.error('Error with /api/setup-db/index:', err2);
+          }
+        }
+        
+        if (!response) {
+          throw new Error('Failed to connect to API endpoint. Please check the server logs.');
+        }
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        resultText.textContent = JSON.stringify(data, null, 2);
+        resultText.classList.add('success');
+        resultText.classList.remove('error');
+      } catch (error) {
+        resultText.textContent = `Error: ${error.message}`;
+        resultText.classList.add('error');
+        resultText.classList.remove('success');
+        
+        // Add alternative instructions
+        resultText.textContent += '\n\nAlternative methods to set up the database:\n\n';
+        resultText.textContent += '1. Use the quick-import.js script which includes the database setup step:\n';
+        resultText.textContent += '   node quick-import.js src/resources/v1_8/intel_xeon_processors_v1_8.csv "your_postgres_url"\n\n';
+        resultText.textContent += '2. Use the setup-vercel-postgres.sh or setup-vercel-postgres.bat script:\n';
+        resultText.textContent += '   ./setup-vercel-postgres.sh src/resources/v1_8/intel_xeon_processors_v1_8.csv\n\n';
+        resultText.textContent += '3. Run the database setup locally:\n';
+        resultText.textContent += '   npm run setup-db';
+      }
+    });
+  </script>
+</body>
+</html>

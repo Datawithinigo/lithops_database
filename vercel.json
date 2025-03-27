@@ -18,8 +18,40 @@
   ],
   "routes": [
     {
+      "src": "/api/setup-db",
+      "dest": "/api/setup-db/index.js"
+    },
+    {
+      "src": "/api/upload-csv",
+      "dest": "/api/upload-csv/index.js"
+    },
+    {
+      "src": "/api/processors",
+      "dest": "/api/processors/index/index.js"
+    },
+    {
+      "src": "/api/processors/(.*)",
+      "dest": "/api/processors/$1.js"
+    },
+    {
+      "src": "/api/processor/(.*)",
+      "dest": "/api/processor/$1.js"
+    },
+    {
+      "src": "/admin",
+      "dest": "/admin.html"
+    },
+    {
+      "src": "/setup-db",
+      "dest": "/setup-db.html"
+    },
+    {
+      "src": "/import-data",
+      "dest": "/import-data.html"
+    },
+    {
       "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "dest": "/api/$1.js"
     },
     {
       "src": "/(.*)",

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - GreenComputingLithops</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    h1 {
+      color: #2c3e50;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+    }
+    .card {
+      background-color: #f8f9fa;
+      border-left: 4px solid #3498db;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 0 4px 4px 0;
+    }
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .tool {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 15px;
+      text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .tool:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    .tool h3 {
+      margin-top: 0;
+      color: #2c3e50;
+    }
+    .tool p {
+      color: #7f8c8d;
+      margin-bottom: 15px;
+    }
+    .tool a {
+      display: inline-block;
+      background-color: #3498db;
+      color: white;
+      text-decoration: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+    }
+    .tool a:hover {
+      background-color: #2980b9;
+    }
+    .status {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 4px;
+      background-color: #f1f1f1;
+    }
+    .status h3 {
+      margin-top: 0;
+    }
+    .status-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+    .status-unknown {
+      background-color: #95a5a6;
+    }
+    .status-ok {
+      background-color: #2ecc71;
+    }
+    .status-error {
+      background-color: #e74c3c;
+    }
+  </style>
+</head>
+<body>
+  <h1>Admin Dashboard - GreenComputingLithops</h1>
+  
+  <div class="card">
+    <h2>Database Management Tools</h2>
+    <p>Use these tools to set up and manage your Vercel Postgres database for the GreenComputingLithops project.</p>
+    
+    <div class="tool-grid">
+      <div class="tool">
+        <h3>Setup Database</h3>
+        <p>Create the database schema</p>
+        <a href="/setup-db.html">Open Tool</a>
+      </div>
+      
+      <div class="tool">
+        <h3>Import Data</h3>
+        <p>Import processor data from CSV</p>
+        <a href="/import-data.html">Open Tool</a>
+      </div>
+      
+      <div class="tool">
+        <h3>API Tester</h3>
+        <p>Test the API endpoints</p>
+        <a href="/api-test.html">Open Tool</a>
+      </div>
+      
+      <div class="tool">
+        <h3>View Application</h3>
+        <p>View the main application</p>
+        <a href="/">Open App</a>
+      </div>
+    </div>
+  </div>
+  
+  <div class="status">
+    <h3>System Status</h3>
+    <div id="database-status">
+      <span class="status-indicator status-unknown"></span>
+      Database: Checking...
+    </div>
+    <div id="api-status">
+      <span class="status-indicator status-unknown"></span>
+      API: Checking...
+    </div>
+  </div>
+
+  <script>
+    // Check database status
+    async function checkDatabaseStatus() {
+      const dbStatus = document.getElementById('database-status');
+      const dbIndicator = dbStatus.querySelector('.status-indicator');
+      
+      try {
+        // Try to fetch processors to check if database is working
+        const response = await fetch('/api/processors?limit=1');
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (Array.isArray(data) && data.length > 0) {
+            dbStatus.innerHTML = `
+              <span class="status-indicator status-ok"></span>
+              Database: Connected and contains data (${data.length} processors)
+            `;
+          } else {
+            dbStatus.innerHTML = `
+              <span class="status-indicator status-ok"></span>
+              Database: Connected but no data found
+            `;
+          }
+        } else {
+          dbStatus.innerHTML = `
+            <span class="status-indicator status-error"></span>
+            Database: Error (${response.status} ${response.statusText})
+          `;
+        }
+      } catch (error) {
+        dbStatus.innerHTML = `
+          <span class="status-indicator status-error"></span>
+          Database: Error (${error.message})
+        `;
+      }
+    }
+    
+    // Check API status
+    async function checkApiStatus() {
+      const apiStatus = document.getElementById('api-status');
+      const apiIndicator = apiStatus.querySelector('.status-indicator');
+      
+      try {
+        // Try to fetch API info to check if API is working
+        const response = await fetch('/api');
+        
+        if (response.ok) {
+          const data = await response.json();
+          apiStatus.innerHTML = `
+            <span class="status-indicator status-ok"></span>
+            API: Available (${data.name || 'GreenComputingLithops API'})
+          `;
+        } else {
+          apiStatus.innerHTML = `
+            <span class="status-indicator status-error"></span>
+            API: Error (${response.status} ${response.statusText})
+          `;
+        }
+      } catch (error) {
+        apiStatus.innerHTML = `
+          <span class="status-indicator status-error"></span>
+          API: Error (${error.message})
+        `;
+      }
+    }
+    
+    // Check status on page load
+    window.addEventListener('load', () => {
+      checkDatabaseStatus();
+      checkApiStatus();
+    });
+  </script>
+</body>
+</html>
