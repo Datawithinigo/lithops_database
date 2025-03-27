@@ -14,6 +14,8 @@
     "export-data": "node export-data.js",
     "import-csv": "node import-csv-to-vercel.js",
     "quick-import": "node quick-import.js",
+    "csv-to-sql": "node csv-to-sql.js",
+    "import-all-csv": "node import-all-csv.js",
     "setup-vercel-postgres": "bash setup-vercel-postgres.sh",
     "setup-vercel-postgres-win": "setup-vercel-postgres.bat"
   },
