@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Processor TDP Lookup - GreenComputingLithops</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    h1 {
+      color: #2c3e50;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+    }
+    .card {
+      background-color: #f8f9fa;
+      border-left: 4px solid #3498db;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 0 4px 4px 0;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    pre {
+      background-color: #f1f1f1;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    .result {
+      margin-top: 20px;
+      display: none;
+    }
+    .success {
+      color: #27ae60;
+    }
+    .error {
+      color: #e74c3c;
+    }
+    .examples {
+      margin-top: 20px;
+    }
+    .example {
+      cursor: pointer;
+      color: #3498db;
+      text-decoration: underline;
+      margin-right: 10px;
+    }
+    .api-url {
+      font-family: monospace;
+      background-color: #f1f1f1;
+      padding: 5px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Processor TDP Lookup - GreenComputingLithops</h1>
+  
+  <div class="card">
+    <h2>Look Up Processor TDP</h2>
+    <p>Enter a processor name to look up its Thermal Design Power (TDP) in watts.</p>
+    
+    <label for="processorName">Processor Name:</label>
+    <input type="text" id="processorName" placeholder="e.g., Intel Xeon E5-2690">
+    <button id="lookupButton">Look Up TDP</button>
+    
+    <div class="examples">
+      <p>Examples: 
+        <span class="example" onclick="setExample('Intel Xeon E5-2690')">Intel Xeon E5-2690</span>
+        <span class="example" onclick="setExample('Intel Xeon E5-2680')">Intel Xeon E5-2680</span>
+        <span class="example" onclick="setExample('Intel Xeon E5-2670')">Intel Xeon E5-2670</span>
+      </p>
+    </div>
+    
+    <div id="result" class="result">
+      <h3>Result:</h3>
+      <pre id="resultText"></pre>
+      
+      <div id="api-test" style="display: none; margin-top: 20px;">
+        <h3>API Endpoint Tests:</h3>
+        
+        <div style="margin-bottom: 10px;">
+          <strong>JSON Endpoint:</strong>
+          <a id="json-link" href="#" target="_blank" style="margin-left: 10px;">Open in new tab</a>
+          <pre id="json-result" style="margin-top: 5px;"></pre>
+        </div>
+        
+        <div style="margin-bottom: 10px;">
+          <strong>Plain Text Endpoint:</strong>
+          <a id="plain-link" href="#" target="_blank" style="margin-left: 10px;">Open in new tab</a>
+          <pre id="plain-result" style="margin-top: 5px;"></pre>
+        </div>
+        
+        <div style="margin-bottom: 10px;">
+          <strong>Raw Value Endpoint:</strong>
+          <a id="value-link" href="#" target="_blank" style="margin-left: 10px;">Open in new tab</a>
+          <pre id="value-result" style="margin-top: 5px;"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="card">
+    <h2>API Usage</h2>
+    <p>You can use these API endpoints in your own applications:</p>
+    
+    <h3>JSON Response</h3>
+    <p class="api-url">GET /api/processor/tdp/{processor_name}</p>
+    <p>Replace <code>{processor_name}</code> with the name of the processor you want to look up.</p>
+    <p>Example:</p>
+    <p class="api-url">GET /api/processor/tdp/Intel%20Xeon%20E5-2690</p>
+    <p>Response:</p>
+    <pre>{
+  "processor": "Intel Xeon E5-2690",
+  "tdp": 135
+}</pre>
+
+    <h3>Plain Text Response</h3>
+    <p class="api-url">GET /api/processor/tdp/plain/{processor_name}</p>
+    <p>This endpoint returns a simple text response, useful for integrations that don't need JSON.</p>
+    <p>Example:</p>
+    <p class="api-url">GET /api/processor/tdp/plain/Intel%20Xeon%20E5-2690</p>
+    <p>Response:</p>
+    <pre>The TDP of Intel Xeon E5-2690 is 135 watts</pre>
+
+    <h3>Raw Value Response</h3>
+    <p class="api-url">GET /api/processor/tdp/value/{processor_name}</p>
+    <p>This endpoint returns just the TDP value as a number, useful for scripts and automated tools.</p>
+    <p>Example:</p>
+    <p class="api-url">GET /api/processor/tdp/value/Intel%20Xeon%20E5-2690</p>
+    <p>Response:</p>
+    <pre>135</pre>
+  </div>
+  
+  <div class="card">
+    <h2>About TDP</h2>
+    <p>Thermal Design Power (TDP) represents the average power, in watts, the processor dissipates when operating at Base Frequency with all cores active under an Intel-defined, high-complexity workload.</p>
+    <p>TDP is an important metric for:</p>
+    <ul>
+      <li>Designing cooling solutions</li>
+      <li>Estimating power consumption</li>
+      <li>Calculating energy costs</li>
+      <li>Planning for sustainable computing</li>
+    </ul>
+  </div>
+
+  <script>
+    function setExample(processorName) {
+      document.getElementById('processorName').value = processorName;
+    }
+    
+    async function testAllEndpoints(processorName) {
+      const apiTest = document.getElementById('api-test');
+      apiTest.style.display = 'block';
+      
+      // Set up links
+      const jsonLink = document.getElementById('json-link');
+      const plainLink = document.getElementById('plain-link');
+      const valueLink = document.getElementById('value-link');
+      
+      const jsonUrl = `/api/processor/tdp/${encodeURIComponent(processorName)}`;
+      const plainUrl = `/api/processor/tdp/plain/${encodeURIComponent(processorName)}`;
+      const valueUrl = `/api/processor/tdp/value/${encodeURIComponent(processorName)}`;
+      
+      jsonLink.href = jsonUrl;
+      plainLink.href = plainUrl;
+      valueLink.href = valueUrl;
+      
+      // Test JSON endpoint
+      try {
+        const jsonResponse = await fetch(jsonUrl);
+        if (jsonResponse.ok) {
+          const jsonData = await jsonResponse.json();
+          document.getElementById('json-result').textContent = JSON.stringify(jsonData, null, 2);
+        } else {
+          document.getElementById('json-result').textContent = `Error: ${jsonResponse.status} ${jsonResponse.statusText}`;
+        }
+      } catch (error) {
+        document.getElementById('json-result').textContent = `Error: ${error.message}`;
+      }
+      
+      // Test Plain Text endpoint
+      try {
+        const plainResponse = await fetch(plainUrl);
+        if (plainResponse.ok) {
+          const plainText = await plainResponse.text();
+          document.getElementById('plain-result').textContent = plainText;
+        } else {
+          document.getElementById('plain-result').textContent = `Error: ${plainResponse.status} ${plainResponse.statusText}`;
+        }
+      } catch (error) {
+        document.getElementById('plain-result').textContent = `Error: ${error.message}`;
+      }
+      
+      // Test Value endpoint
+      try {
+        const valueResponse = await fetch(valueUrl);
+        if (valueResponse.ok) {
+          const valueText = await valueResponse.text();
+          document.getElementById('value-result').textContent = valueText;
+        } else {
+          document.getElementById('value-result').textContent = `Error: ${valueResponse.status} ${valueResponse.statusText}`;
+        }
+      } catch (error) {
+        document.getElementById('value-result').textContent = `Error: ${error.message}`;
+      }
+    }
+    
+    document.getElementById('lookupButton').addEventListener('click', async () => {
+      const processorName = document.getElementById('processorName').value.trim();
+      const resultDiv = document.getElementById('result');
+      const resultText = document.getElementById('resultText');
+      
+      if (!processorName) {
+        resultDiv.style.display = 'block';
+        resultText.textContent = 'Please enter a processor name.';
+        resultText.className = 'error';
+        return;
+      }
+      
+      resultDiv.style.display = 'block';
+      resultText.textContent = 'Looking up TDP...';
+      resultText.className = '';
+      
+      try {
+        const response = await fetch(`/api/processor/tdp/${encodeURIComponent(processorName)}`);
+        
+        if (!response.ok) {
+          if (response.status === 404) {
+            throw new Error(`Processor "${processorName}" not found. Please check the name and try again.`);
+          }
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.tdp) {
+          resultText.innerHTML = `<span class="success">The TDP of ${data.processor} is ${data.tdp} watts.</span>`;
+          resultText.innerHTML += `\n\nAPI Response:\n${JSON.stringify(data, null, 2)}`;
+          
+          // Test all endpoints
+          await testAllEndpoints(processorName);
+        } else {
+          resultText.innerHTML = `<span class="error">TDP information not available for ${data.processor}.</span>`;
+          resultText.innerHTML += `\n\nAPI Response:\n${JSON.stringify(data, null, 2)}`;
+        }
+      } catch (error) {
+        resultText.textContent = `Error: ${error.message}`;
+        resultText.className = 'error';
+      }
+    });
+    
+    // Also trigger lookup on Enter key
+    document.getElementById('processorName').addEventListener('keypress', (event) => {
+      if (event.key === 'Enter') {
+        document.getElementById('lookupButton').click();
+      }
+    });
+  </script>
+</body>
+</html>

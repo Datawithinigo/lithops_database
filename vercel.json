@@ -50,6 +50,10 @@
       "dest": "/import-data.html"
     },
     {
+      "src": "/tdp-lookup",
+      "dest": "/tdp-lookup.html"
+    },
+    {
       "src": "/api/(.*)",
       "dest": "/api/$1.js"
     },
